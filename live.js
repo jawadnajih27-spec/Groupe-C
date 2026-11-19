@@ -1,6 +1,6 @@
 /* طبقة المشاركة الحية داخل موقع المحاكمة.
    تعمل فقط إذا كان config.js مضبوطاً. حين يفتح المقدّم جولة من اللوحة، يظهر داخل نشاطها في الموقع
-   زر لإرسال نتيجة المشارك (موقع المؤشر، أو توزيع مهام المصفوفة، أو اختياره). */
+   زر لإرسال إجابة المشارك (اختياره، أو توزيع مهام المصفوفة). الجولات هي أسئلة النص نفسه: انظر cue في activities.js. */
 (function () {
   'use strict';
   var CFG = window.MT_CONFIG || {}, ACTS = window.MT_ACTIVITIES || [];
@@ -33,9 +33,6 @@
   var S = { pin: urlPin || ls('mt_pin') || '', device: ls('mt_device') || uuid(), round: null, open: false, busy: false, online: true, msg: '' };
   ls('mt_device', S.device);
   if (urlPin) { ls('mt_pin', urlPin); try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { } }
-  var ydTouched = false;
-  var yd = document.getElementById('ydRange');
-  if (yd) yd.addEventListener('input', function () { ydTouched = true; refreshPanels(); });
   if (window.MT_MX) window.MT_MX.onChange = function () { refreshPanels(); };
   else window.addEventListener('load', function () { if (window.MT_MX) window.MT_MX.onChange = function () { refreshPanels(); }; });
 
@@ -59,12 +56,6 @@
   function formFor(r, act, onChange) {
     var spec = r.spec || {}, val = null, ok = false;
     function set(v, o) { val = v; ok = o; onChange(); }
-    if (act && act.driver === 'yd') {
-      return { el: h('p', { class: 'lv-hint' }, ['حرّك المؤشر في الرسم إلى موقعك الحقيقي، ثم أرسل.']),
-        ready: function () { return !!document.getElementById('ydRange') && ydTouched; },
-        value: function () { return +document.getElementById('ydRange').value; },
-        label: function () { return ydTouched ? 'أرسل موقعي (' + document.getElementById('ydRange').value + ')' : 'حرّك المؤشر أولاً'; } };
-    }
     if (act && act.driver === 'matrix' && window.MT_MX) {
       var left = function () { return window.MT_MX.get().filter(function (x) { return x === null; }).length; };
       return { el: h('p', { class: 'lv-hint' }, [h('span', { 'data-mxleft': '' }, [left() ? 'ضع المهام الأربع في خاناتها بالأعلى ثم أرسل. المتبقي: ' + left() : 'اكتملت المهام. يمكنك الإرسال.'])]),
@@ -144,10 +135,31 @@
     var r = S.round;
     panels = panels.filter(function (P) { if (r && P.round.id === r.id) return true; P.box.remove(); return false; });
     if (r && !panels.length) {
-      var act = actOf(r), host = act && act.widget && document.getElementById(act.widget);
-      if (host) panels.push(buildPanel(host, act, r));
+      // الجولة تظهر في موضعها من الحوار (الخانة slot-<key>)، وإلا ففي أداتها
+      var act = actOf(r), host = act && (document.getElementById('slot-' + act.key) || (act.widget && document.getElementById(act.widget)));
+      if (host) {
+        panels.push(buildPanel(host, act, r));
+        if (scrolledTo !== r.id && doneIds().indexOf(r.id) < 0) goTo(host, r.id);
+      }
     }
     refreshPanels();
+  }
+  // أول ظهور للجولة: انتقل بالمشارك إلى موضعها في الحوار إن لم تكن في مرمى بصره
+  var scrolledTo = null, userMoved = false;
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (ev) { window.addEventListener(ev, function () { userMoved = true; }, { passive: true }); });
+  function inView(el) { var b = el.getBoundingClientRect(), vh = window.innerHeight || 700; return b.top >= 0 && b.bottom <= vh; }
+  function goTo(host, id) {
+    scrolledTo = id; userMoved = false;
+    try {
+      if (inView(host)) return;
+      var vh = window.innerHeight || 700, far = Math.abs(host.getBoundingClientRect().top) > vh * 1.5;
+      var calm = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || far;
+      host.scrollIntoView({ behavior: calm ? 'instant' : 'smooth', block: 'center' });
+      // الصفحة طويلة وتتغير أطوال أقسامها أثناء الانتقال: أعد الضبط إن لم يصل ما لم يتدخل القارئ بيده
+      [350, 900, 1800].forEach(function (ms) {
+        setTimeout(function () { if (!userMoved && scrolledTo === id && host.isConnected && !inView(host)) host.scrollIntoView({ behavior: 'instant', block: 'center' }); }, ms);
+      });
+    } catch (e) { }
   }
 
   // ---------- الزر العائم والبطاقة ----------
