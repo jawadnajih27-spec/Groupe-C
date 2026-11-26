@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://*.supabase.co wss://*.supabase.co; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>لوحة التحكم · محاكمة صورية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f5f6f9;--surface:#fff;--ink:#14203a;--ink2:#45516b;--ink3:#5c6882;--line:#d8dce6;--accent:#b34a12;--on-accent:#fff;
+  --tint:#eceff5;--tint2:#d9dfeb;--tintacc:#f3d9c7;--ok:#1f7a4d;--bad:#b3261e;--f:"Cairo","Segoe UI","Tahoma","DejaVu Sans",sans-serif}
+@media (prefers-color-scheme:dark){:root{--paper:#0f1729;--surface:#162038;--ink:#eef0f6;--ink2:#b9c2d6;--ink3:#96a1ba;--line:#2a3552;
+  --accent:#f08c4f;--on-accent:#1a0f08;--tint:#17223b;--tint2:#25335a;--tintacc:#5a3b2a;--ok:#5fd08f;--bad:#ff8a80;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.7 var(--f);direction:rtl;min-height:100vh;
+  padding-inline:max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-left));padding-block:env(safe-area-inset-top) env(safe-area-inset-bottom)}
+h1,h2,h3,h4,p,ul{margin:0}ul{padding:0;list-style:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.5rem 1.4rem;border-radius:12px;border:1.5px solid var(--line);
+  background:var(--surface);font-weight:600;transition:background .15s,border-color .15s,transform .05s}
+.btn:hover{border-color:var(--ink3)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.sm{min-height:38px;padding:.25rem .9rem;font-size:.9rem;border-radius:10px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.4rem}
+.mut{color:var(--ink3)}
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.02em;color:var(--accent)}
+.chip{display:inline-flex;align-items:center;gap:.4rem;border-radius:99px;padding:.05rem .8rem;font-size:.82rem;font-weight:600;background:var(--tint);color:var(--ink2)}
+.chip.live{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.chip.live::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+input[type=text],input[type=email],input[type=password],input[type=url]{width:100%;min-height:48px;padding:.4rem .9rem;border:1.5px solid var(--line);border-radius:12px;background:var(--paper);direction:ltr;text-align:start}
+input[type=range]{width:100%;accent-color:var(--accent);height:44px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:1rem}
+.bar b{font-size:1.15rem}
+.bar .r{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:1.2rem;align-items:start;padding-bottom:3rem;max-width:1500px;margin:0 auto}
+@media (max-width:980px){.grid{grid-template-columns:1fr}.ctl{order:2}}
+.ctl{display:grid;gap:1rem}
+.card h2{font-size:1rem;font-weight:700;margin-bottom:.8rem}
+.pin{font:700 2.6rem/1 var(--f);letter-spacing:.18em;direction:ltr;text-align:center;color:var(--accent);padding:.4rem 0 .2rem;font-variant-numeric:tabular-nums}
+.qr{display:grid;place-items:center;margin:.6rem 0}
+.qr img{width:170px;height:170px;image-rendering:pixelated;background:#fff;padding:8px;border-radius:12px;border:1px solid var(--line)}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.row.sp{justify-content:space-between}
+.fld{display:grid;gap:.3rem;margin-top:.7rem}
+.fld label{font-size:.82rem;color:var(--ink3)}
+.rh .cue{color:var(--ink3);font-size:.9rem;line-height:1.7;margin:-.2rem 0 .5rem}
+body.present .rh .cue{display:none}
+.hist{display:grid;gap:.3rem;max-height:260px;overflow:auto}
+.hi{display:flex;justify-content:space-between;gap:.5rem;text-align:start;width:100%;padding:.45rem .7rem;border-radius:10px;border:1px solid transparent;background:none;font-size:.9rem}
+.hi:hover{background:var(--tint)}
+.hi[aria-current=true]{border-color:var(--accent);background:var(--tintacc)}
+.hi small{color:var(--ink3);white-space:nowrap}
+/* النتائج */
+.res{min-height:60vh}
+.rh{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.rh h1{font-size:1.7rem;line-height:1.45;font-weight:700;margin:.2rem 0 .5rem}
+.n{display:flex;align-items:baseline;gap:.5rem}
+.n b{font-size:3.6rem;line-height:1;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.n span{color:var(--ink3)}
+.stats{display:flex;gap:1.6rem;flex-wrap:wrap;margin-block:.6rem 1rem}
+.stat b{display:block;font-size:1.6rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:.82rem;color:var(--ink3)}
+.viz{margin-block:1rem;overflow-x:auto}
+.viz svg{width:100%;height:auto;display:block;max-height:420px}
+.v-bar{fill:var(--accent);opacity:.85}
+.v-bar.lead{opacity:1}
+.v-band{fill:var(--tint)}.v-band.mid{fill:var(--tintacc)}
+.v-txt{fill:var(--ink2);font-size:13px}
+.v-num{fill:var(--ink);font-size:14px;font-weight:700}
+.v-axis{stroke:var(--ink3);stroke-width:1.5;fill:none}
+.v-curve{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round}
+.v-dot{fill:var(--accent);opacity:.28}
+.v-mean{fill:var(--accent);stroke:var(--surface);stroke-width:3}
+.v-meanline{stroke:var(--ink);stroke-width:2;stroke-dasharray:5 4}
+.hbar{display:grid;grid-template-columns:minmax(120px,32%) minmax(0,1fr) auto;gap:.4rem .8rem;align-items:center;margin-block:.5rem}
+.hbar .t{font-weight:600;line-height:1.5;min-width:0;overflow-wrap:anywhere}
+.hbar .tr{height:26px;border-radius:8px;background:var(--tint);overflow:hidden}
+.hbar .fl{height:100%;background:var(--accent);opacity:.8;border-radius:8px;transition:width .5s}
+.hbar.lead .fl{opacity:1}
+.hbar .p{font-variant-numeric:tabular-nums;font-weight:700;text-align:end;direction:ltr;white-space:nowrap;min-width:5.6rem}
+.hbar .p small{color:var(--ink3);font-weight:400}
+@media (max-width:640px){.hbar{grid-template-columns:minmax(0,1fr) auto;margin-block:.8rem}.hbar .t{grid-column:1/-1}.hbar .p{min-width:0}}
+.tag{display:inline-block;margin-inline-start:.5rem;font-size:.72rem;padding:0 .5rem;border-radius:99px;background:var(--tint2);color:var(--ink2);font-weight:600}
+table.mx{width:100%;border-collapse:separate;border-spacing:4px;margin-block:.6rem}
+.mx th{font-weight:600;font-size:.85rem;color:var(--ink2);text-align:start;padding:.3rem .5rem}
+.mx td{text-align:center;padding:.7rem .3rem;border-radius:10px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--tint)}
+.mx td.top{outline:2px solid var(--accent);outline-offset:-2px}
+.mx tbody th{width:32%}
+.q2{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;margin-top:.6rem}
+.q2 .ax{font-size:.8rem;color:var(--ink3);display:grid;place-items:center;padding:.2rem .4rem;font-weight:600}
+.q2 .qc{min-height:110px;background:var(--tint);border-radius:14px;padding:.7rem .8rem}
+.q2 .qc.c0{background:var(--tintacc)}
+.q2 .qc h4{font-size:.9rem;margin-bottom:.1rem}
+.q2 .qc .av{font-size:.78rem;color:var(--ink3);margin-bottom:.4rem}
+.q2 .pill{display:inline-block;margin:.15rem .1rem;padding:.1rem .7rem;border-radius:99px;background:var(--surface);border:1px solid var(--line);font-size:.85rem}
+.single{margin-top:1.2rem;border:2px solid var(--accent);border-radius:16px;padding:1rem 1.2rem;background:var(--surface)}
+.single h3{font-size:.85rem;color:var(--accent);margin-bottom:.3rem}
+.single p{font-size:1.15rem;line-height:1.75;font-weight:600}
+.ins{margin-top:1rem;border:2px dashed var(--ink3);border-radius:16px;padding:1rem 1.2rem;background:var(--tint)}
+.ins h3{font-size:.85rem;color:var(--ink3);margin-bottom:.4rem}
+.ins p{font-size:1.05rem;line-height:1.85;margin-top:.35rem}
+body.present .ins{display:none}
+.cmp{display:flex;gap:1.6rem;align-items:center;flex-wrap:wrap;margin-top:.8rem}
+.empty{padding:3rem 1rem;text-align:center;color:var(--ink3)}
+.acts{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.4rem}
+.login{max-width:420px;margin:12vh auto 0}
+.login h1{font-size:1.4rem;margin-bottom:1rem}
+.err{color:var(--bad);min-height:1.5em;margin-top:.6rem;font-size:.92rem}
+.toast{position:fixed;inset-inline:0;bottom:1rem;margin-inline:auto;width:max-content;max-width:90vw;padding:.6rem 1.1rem;border-radius:12px;background:var(--ink);color:var(--paper);font-size:.92rem;z-index:50}
+/* قائمة الأنشطة */
+.mainc{display:grid;gap:.8rem;min-width:0}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.tabs .btn{min-height:42px}
+.tabs .btn[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tabs .btn[aria-selected=true] .chip{background:color-mix(in srgb,var(--on-accent) 24%,transparent);color:var(--on-accent)}
+.plan{display:grid;gap:.8rem;min-width:0}
+.plan .ph{padding:1.1rem 1.3rem}
+.plan .ph h1{font-size:1.25rem;line-height:1.5;font-weight:700}
+.plan .ph p{margin-top:.3rem;color:var(--ink2);font-size:.92rem;line-height:1.8}
+.pax{font-size:.85rem;font-weight:700;color:var(--accent);margin:.8rem .2rem 0;line-height:1.6}
+.pc{display:grid;grid-template-columns:2.4rem minmax(0,1fr) minmax(9rem,auto);gap:.4rem 1rem;align-items:start;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.pc.on{border-color:var(--accent);border-width:2px;background:var(--tintacc)}
+.pc .no{width:2.4rem;height:2.4rem;border-radius:50%;display:grid;place-items:center;background:var(--tint2);color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.pc.live .no{background:var(--accent);color:var(--on-accent)}
+.pc .bd{min-width:0}
+.pc .meta{display:flex;flex-wrap:wrap;gap:.2rem .6rem;align-items:center;font-size:.8rem;color:var(--ink3);line-height:1.7}
+.pc h3{font-size:1.08rem;line-height:1.6;font-weight:700;margin:.15rem 0 .1rem;overflow-wrap:anywhere}
+.pc .pq{font-size:.9rem;line-height:1.8;color:var(--ink2);overflow-wrap:anywhere}
+.pc .nt{font-size:.88rem;line-height:1.85;color:var(--ink3);margin-top:.2rem;overflow-wrap:anywhere}
+.pc .ac{display:grid;gap:.4rem;align-content:start}
+.pc .ac .btn{width:100%}
+.pc .cn{text-align:center;font-size:.85rem;color:var(--ink2);font-variant-numeric:tabular-nums}
+@media (max-width:640px){
+  .pc{grid-template-columns:2.4rem minmax(0,1fr)}
+  .pc .ac{grid-column:1/-1;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
+}
+body.present .tabs,body.present #plan{display:none}
+.rail{display:none}
+body.present .bar,body.present .ctl{display:none}
+body.present .grid{grid-template-columns:minmax(0,1fr) 200px;max-width:none;padding-top:1rem;gap:1.4rem}
+body.present .rail{display:grid;gap:.9rem;align-content:start;justify-items:stretch;position:sticky;top:1rem}
+@media (max-width:900px){body.present .grid{grid-template-columns:minmax(0,1fr)}body.present .rail{position:static;justify-items:center}}
+body.present .rh h1{font-size:clamp(1.8rem,3.4vw,2.8rem)}
+body.present .n b{font-size:clamp(3.5rem,7vw,5.5rem)}
+body.present .stat b{font-size:2rem}
+body.present .hbar{font-size:clamp(1rem,1.6vw,1.4rem);margin-block:.45rem;grid-template-columns:minmax(180px,34%) minmax(0,1fr) auto}
+@media (max-width:640px){body.present .hbar{grid-template-columns:minmax(0,1fr) auto}}
+body.present .hbar .tr{height:32px}
+body.present .single p{font-size:clamp(1.2rem,2vw,1.7rem)}
+body.present .noprint{display:none}
+#qrcorner{display:grid;gap:.3rem;justify-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.7rem}
+#qrcorner img{width:100%;max-width:170px;height:auto;aspect-ratio:1;background:#fff;padding:4px;border-radius:8px}
+#qrcorner b{font:700 1.1rem var(--f);letter-spacing:.14em;direction:ltr;color:var(--accent)}
+#exitp{width:100%}
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.ctl,.noprint,.rail,.toast,.tabs,#plan{display:none!important}
+  .grid{display:block}
+  .card{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<div id="boot" class="empty">جارٍ التحميل…</div>
+
+<section id="loginv" class="login card" hidden>
+  <p class="eyebrow">لوحة التحكم</p>
+  <h1>تسجيل الدخول</h1>
+  <form id="loginf" autocomplete="on">
+    <div class="fld"><label for="em">البريد الإلكتروني</label><input id="em" type="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email" required></div>
+    <div class="fld"><label for="pw">كلمة السر</label><input id="pw" type="password" autocomplete="current-password" required></div>
+    <p class="err" id="lerr" role="alert"></p>
+    <button class="btn pri" style="width:100%;margin-top:.6rem" type="submit">دخول</button>
+  </form>
+</section>
+
+<section id="deniedv" class="login card" hidden>
+  <h1>لا تملك صلاحية الدخول</h1>
+  <p class="mut" style="margin-bottom:1rem">هذا الحساب ليس مشرفاً. أضِفه إلى جدول admins كما في دليل الإعداد، أو ادخل بحساب آخر.</p>
+  <button class="btn" id="deniedout" type="button">تسجيل الخروج</button>
+</section>
+
+<div id="mainv" hidden>
+  <header class="bar">
+    <b>لوحة المحاكمة الصورية</b>
+    <div class="r"><span class="chip live" id="livechip">مباشر</span><span class="mut" id="who"></span>
+      <button class="btn sm pri" id="presb" type="button">وضع العرض</button>
+      <button class="btn sm" id="outb" type="button">خروج</button></div>
+  </header>
+  <div class="grid">
+    <aside class="ctl">
+      <section class="card" id="sess" aria-label="الجلسة"></section>
+      <section class="card" id="hist" aria-label="الجولات السابقة"></section>
+    </aside>
+    <div class="mainc">
+      <nav class="tabs noprint" role="tablist" aria-label="العرض">
+        <button class="btn" role="tab" id="tab-plan" type="button" aria-selected="true">الأنشطة</button>
+        <button class="btn" role="tab" id="tab-res" type="button" aria-selected="false">النتائج <span class="chip live" id="tabn" hidden></span></button>
+      </nav>
+      <section class="plan" id="plan" aria-label="قائمة الأنشطة" hidden></section>
+      <section class="card res" id="res" aria-live="polite"></section>
+    </div>
+    <aside class="rail" aria-label="رمز الانضمام">
+      <div id="qrcorner"></div>
+      <button class="btn sm" id="exitp" type="button">خروج من العرض (Esc)</button>
+    </aside>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="activities.js"></script>
+<script src="insights.js"></script>
+<script src="plan.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.MT_CONFIG || {}, ACTS = window.MT_ACTIVITIES || [], PLAN = window.MT_PLAN || [], INS = window.MT_INSIGHTS || {};
+  function cleanUrl(u) { u = String(u || '').trim(); var m = u.match(/supabase\.com\/dashboard\/project\/([a-z0-9]+)/i); if (m) return 'https://' + m[1] + '.supabase.co'; try { return new URL(u).origin; } catch (e) { return u; } }
+  CFG = { url: cleanUrl(CFG.url), anonKey: String(CFG.anonKey || '').trim() };
+  var $ = function (s) { return document.querySelector(s); };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  // ---------- أدوات ----------
+  function h(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      var v = attrs[k]; if (v === false || v == null) return;
+      if (k === 'class') e.className = v;
+      else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v === true ? '' : v);
+    });
+    (kids || []).forEach(function (c) { if (c == null) return; e.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+    return e;
+  }
+  function s(tag, attrs, kids) {
+    var e = document.createElementNS(SVGNS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    (kids || []).forEach(function (c) { if (c == null) return; e.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c))); });
+    return e;
+  }
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function num(x, d) { if (d == null) d = 1; var r = Math.round(x * Math.pow(10, d)) / Math.pow(10, d); return String(r); }
+  function pct(a, b) { return b ? Math.round(a * 100 / b) : 0; }
+  function mean(a) { return a.reduce(function (x, y) { return x + y; }, 0) / a.length; }
+  function median(a) { var b = a.slice().sort(function (x, y) { return x - y; }), m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; }
+  function show(id, on) { $(id).hidden = !on; }
+  function toast(t) { var e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { e.hidden = true; }, 3200); }
+  function clock(iso) { try { return new Date(iso).toLocaleTimeString('ar-MA-u-nu-latn', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } }
+
+  // ---------- الإعداد ----------
+  var boot = $('#boot');
+  if (!CFG.url || !CFG.anonKey || /YOUR-/i.test(CFG.url + CFG.anonKey) || !window.supabase) {
+    boot.textContent = 'اللوحة غير مهيّأة: عدّل الملف config.js وضع عنوان مشروع Supabase والمفتاح العام (anon / publishable). لا تضع مفتاح service_role هنا أبداً.';
+    return;
+  }
+  var sb = window.supabase.createClient(CFG.url, CFG.anonKey, { auth: { persistSession: true, autoRefreshToken: true } });
+
+  var S = { tab: 'plan', pin: '', rounds: [], sel: null, userSel: false, resp: [], other: null, sig: '', joinUrl: ls('mt_join_url') || '', timer: null, chan: null };
+
+  // ---------- الدخول ----------
+  function loginMsg(e) {
+    var m = (e && e.message) || String(e || ''), st = e && e.status, code = (e && e.code) || '';
+    if (/api key|apikey|jwt/i.test(m) || (st === 401 && !/credentials/i.test(m)))
+      return 'مفتاح Supabase في config.js غير صحيح، أو هو من مشروع غير الذي عنوانه في الملف. انسخ العنوان والمفتاح العام (anon / publishable) معاً من Project Settings ▸ API في المشروع نفسه، بلا مسافات.';
+    if (/not confirmed/i.test(m) || code === 'email_not_confirmed')
+      return 'لم يُؤكَّد بريد هذا الحساب بعد. في Supabase ▸ Authentication ▸ Users أكّد الحساب، أو احذفه وأنشئه من جديد مع تفعيل Auto Confirm User.';
+    if (/invalid login credentials/i.test(m) || code === 'invalid_credentials')
+      return 'البريد أو كلمة السر غير صحيحة. إن كنت واثقاً منهما فغالباً أُنشئ الحساب في مشروع Supabase آخر أو بلا كلمة سر (دعوة). تحقق من وجوده في Authentication ▸ Users لمشروع config.js نفسه، أو احذفه وأنشئه بـ Create new user مع كلمة سر وAuto Confirm User.';
+    if (/invalid path/i.test(m) || st === 404) return 'عنوان المشروع (url) في config.js فيه مسار زائد. ضع العنوان وحده بالشكل https://xxxx.supabase.co بلا /rest/v1 ولا أي شيء بعده.';
+    if (/rate limit|too many/i.test(m) || st === 429) return 'محاولات كثيرة. انتظر دقيقة ثم أعد المحاولة.';
+    if (/fetch|network|load failed|timeout/i.test(m) || st === 0) return 'تعذّر الاتصال بـ Supabase. تحقق من الإنترنت ومن Project URL في config.js.';
+    return 'تعذّر الدخول.';
+  }
+  function showLoginErr(e) {
+    var el = $('#lerr'); el.textContent = loginMsg(e);
+    var t = [e && e.status, e && e.code, e && e.message].filter(Boolean).join(' · ');
+    if (t) { var d = document.createElement('small'); d.dir = 'ltr'; d.style.cssText = 'display:block;margin-top:.5rem;opacity:.75;word-break:break-word;text-align:left'; d.textContent = t; el.appendChild(d); }
+  }
+  $('#loginf').addEventListener('submit', function (ev) {
+    ev.preventDefault(); $('#lerr').textContent = '';
+    var btn = $('#loginf button'); btn.disabled = true;
+    sb.auth.signInWithPassword({ email: $('#em').value.trim(), password: $('#pw').value }).then(function (r) {
+      btn.disabled = false;
+      if (r.error) return showLoginErr(r.error);
+      $('#pw').value = ''; afterAuth(r.data.session);
+    }, function (e) { btn.disabled = false; showLoginErr(e); });
+  });
+  function logout() { stop(); sb.auth.signOut().then(function () { view('login'); }); }
+  $('#outb').addEventListener('click', logout); $('#deniedout').addEventListener('click', logout);
+  function view(v) { boot.hidden = true; show('#loginv', v === 'login'); show('#deniedv', v === 'denied'); show('#mainv', v === 'main'); if (v !== 'main') document.body.classList.remove('present'); }
+
+  function afterAuth(session) {
+    if (!session) return view('login');
+    sb.rpc('is_admin').then(function (r) {
+      if (r.error || r.data !== true) return view('denied');
+      $('#who').textContent = (session.user && session.user.email) || '';
+      view('main'); setTab(ls('mt_tab') === 'res' ? 'res' : 'plan'); start();
+    });
+  }
+  sb.auth.getSession().then(function (r) { afterAuth(r.data && r.data.session); });
+  sb.auth.onAuthStateChange(function (ev) { if (ev === 'SIGNED_OUT') { stop(); view('login'); } });
+
+  // ---------- جلب البيانات ----------
+  function start() {
+    stop(); refresh(true);
+    S.timer = setInterval(function () { refresh(false); }, 3000);
+    try {
+      S.chan = sb.channel('responses-live').on('postgres_changes', { event: '*', schema: 'public', table: 'responses' }, function () { refresh(false); }).subscribe();
+    } catch (e) { /* التحديث الدوري يكفي */ }
+  }
+  function stop() { clearInterval(S.timer); S.timer = null; try { if (S.chan) sb.removeChannel(S.chan); } catch (e) { } S.chan = null; }
+
+  var inflight = false;
+  function refresh(force) {
+    if (inflight) return; inflight = true;
+    Promise.all([
+      sb.from('app_settings').select('pin').eq('id', true).maybeSingle(),
+      sb.from('rounds').select('*').order('created_at', { ascending: false }).limit(60)
+    ]).then(function (rs) {
+      if (rs[0].error || rs[1].error) throw (rs[0].error || rs[1].error);
+      S.pin = rs[0].data ? rs[0].data.pin : S.pin;
+      S.rounds = rs[1].data || [];
+      var open = S.rounds.filter(function (r) { return r.status === 'open'; })[0];
+      if (!S.sel || !S.rounds.some(function (r) { return r.id === S.sel; })) { S.sel = (open || S.rounds[0] || {}).id || null; S.userSel = false; }
+      else if (!S.userSel && open && open.id !== S.sel) S.sel = open.id;
+      var cur = curRound();
+      if (!cur) { S.resp = []; S.other = null; return; }
+      var jobs = [sb.from('responses').select('id,payload,created_at').eq('round_id', cur.id).order('id', { ascending: true })];
+      var oth = otherPhase(cur);
+      if (oth) jobs.push(sb.from('responses').select('payload').eq('round_id', oth.id));
+      return Promise.all(jobs).then(function (rr) {
+        if (rr[0].error) throw rr[0].error;
+        S.resp = rr[0].data || [];
+        S.other = oth ? { round: oth, vals: ((rr[1] && rr[1].data) || []).map(function (x) { return +x.payload.v; }) } : null;
+      });
+    }).then(function () { $('#livechip').hidden = false; render(force); })
+      .catch(function (e) { $('#livechip').hidden = true; if (e && /JWT|expired|401/i.test(e.message || '')) { toast('انتهت الجلسة، سجّل الدخول من جديد'); logout(); } })
+      .then(function () { inflight = false; });
+  }
+  function curRound() { return S.rounds.filter(function (r) { return r.id === S.sel; })[0] || null; }
+  function otherPhase(r) {
+    var p = r.spec && r.spec.pair; if (!p) return null;
+    var want = r.spec.phase === 'before' ? 'after' : 'before', t = new Date(r.created_at).getTime();
+    return S.rounds.filter(function (x) { return x.id !== r.id && x.spec && x.spec.pair === p && x.spec.phase === want; })
+      .sort(function (a, b) { return Math.abs(new Date(a.created_at) - t) - Math.abs(new Date(b.created_at) - t); })[0] || null;
+  }
+
+  // ---------- الإجراءات ----------
+  function openRound(a) {
+    sb.rpc('open_round', { p_activity: a.key, p_title: a.title, p_type: a.type, p_spec: a.spec }).then(function (r) {
+      if (r.error) return toast('تعذّر فتح الجولة: ' + r.error.message);
+      S.sel = r.data; S.userSel = false; refresh(true); toast('بدأت الجولة'); setTab('res');
+    });
+  }
+  function closeRound(id) {
+    sb.from('rounds').update({ status: 'closed', closed_at: new Date().toISOString() }).eq('id', id).then(function (r) {
+      if (r.error) return toast('تعذّر الإغلاق'); refresh(true); toast('أُغلقت الجولة');
+    });
+  }
+  function newPin() {
+    var a = new Uint32Array(1); crypto.getRandomValues(a); var pin = String(a[0] % 1000000).padStart(6, '0');
+    sb.from('app_settings').update({ pin: pin }).eq('id', true).then(function (r) { if (r.error) return toast('تعذّر تغيير الرمز'); S.pin = pin; refresh(true); toast('رمز جديد: المشاركون الحاليون يحتاجون المسح من جديد'); });
+  }
+  function clearResp(id) {
+    if (!confirm('حذف كل إجابات هذه الجولة؟')) return;
+    sb.from('responses').delete().eq('round_id', id).then(function (r) { if (r.error) return toast('تعذّر الحذف'); refresh(true); });
+  }
+  function delRound(id) {
+    if (!confirm('حذف الجولة وإجاباتها نهائياً؟')) return;
+    sb.from('rounds').delete().eq('id', id).then(function (r) { if (r.error) return toast('تعذّر الحذف'); S.sel = null; refresh(true); });
+  }
+
+  // ---------- أجزاء الواجهة ----------
+  function joinLink() { var u = (S.joinUrl || '').trim(); if (!u) return ''; return u + (u.indexOf('?') < 0 ? '?' : '&') + 'p=' + encodeURIComponent(S.pin); }
+  function qrImg(url, px) {
+    if (!url || !window.qrcode) return null;
+    try {
+      var q = window.qrcode(0, 'M'); q.addData(url); q.make();
+      var n = q.getModuleCount(), cell = 8, pad = 2, size = (n + pad * 2) * cell, cv = document.createElement('canvas');
+      cv.width = cv.height = size; var cx = cv.getContext('2d');
+      cx.fillStyle = '#fff'; cx.fillRect(0, 0, size, size); cx.fillStyle = '#000';
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (q.isDark(r, c)) cx.fillRect((c + pad) * cell, (r + pad) * cell, cell, cell);
+      return h('img', { src: cv.toDataURL('image/png'), alt: 'رمز QR للانضمام', width: px, height: px });
+    } catch (e) { return null; }
+  }
+  function renderSession() {
+    var box = $('#sess'), inp = h('input', { type: 'url', placeholder: 'https://اسمك.github.io/المستودع/join.html', value: S.joinUrl, 'aria-label': 'رابط صفحة المشاركين' });
+    inp.addEventListener('change', function () { S.joinUrl = inp.value.trim(); ls('mt_join_url', S.joinUrl); S.sig = ''; renderSession(); renderCorner(); });
+    var q = qrImg(joinLink(), 170);
+    box.replaceChildren(
+      h('h2', {}, ['انضمام المشاركين']),
+      h('div', { class: 'pin', 'aria-label': 'رمز الجلسة' }, [S.pin || '······']),
+      h('div', { class: 'qr' }, [q || h('p', { class: 'mut' }, [S.joinUrl ? 'مكتبة QR لم تُحمَّل.' : 'ضع رابط صفحة المشاركين لإظهار QR.'])]),
+      h('div', { class: 'fld' }, [h('label', {}, ['رابط صفحة المشاركين']), inp]),
+      h('div', { class: 'row', style: 'margin-top:.8rem' }, [h('button', { class: 'btn sm', type: 'button', onclick: newPin }, ['رمز جديد'])])
+    );
+  }
+  function renderCorner() {
+    var c = $('#qrcorner'); var q = qrImg(joinLink(), 120);
+    c.replaceChildren.apply(c, q ? [q, h('b', {}, [S.pin])] : [h('b', {}, [S.pin])]);
+  }
+  function renderHist() {
+    var box = $('#hist');
+    var list = S.rounds.map(function (r) {
+      return h('button', { class: 'hi', type: 'button', 'aria-current': r.id === S.sel ? 'true' : 'false', onclick: function () { S.sel = r.id; S.userSel = true; S.sig = ''; refresh(true); } },
+        [h('span', {}, [r.title]), h('small', {}, [(r.status === 'open' ? 'مفتوحة · ' : '') + clock(r.created_at)])]);
+    });
+    box.replaceChildren.apply(box, [h('h2', {}, ['الجولات'])].concat(list.length ? [h('div', { class: 'hist' }, list)] : [h('p', { class: 'mut' }, ['لا جولات بعد.'])]));
+  }
+
+  // ---------- الاستخلاص ----------
+  function vals(r) { return S.resp.map(function (x) { return x.payload && x.payload.v; }); }
+  function aggChoice(v, k) { var c = []; for (var i = 0; i < k; i++) c.push(0); v.forEach(function (x) { if (c[x] != null) c[x]++; }); return c; }
+  function aggMatrix(v, ni, nq) { var m = []; for (var i = 0; i < ni; i++) { m.push([]); for (var j = 0; j < nq; j++) m[i].push(0); } v.forEach(function (arr) { arr.forEach(function (q, i) { if (m[i] && m[i][q] != null) m[i][q]++; }); }); return m; }
+
+  // ---------- الرسوم ----------
+  function vizHist(spec, v) {
+    var W = 640, H = 240, P = 24, min = +spec.min, max = +spec.max, range = max - min, nb = range <= 10 ? range + 1 : 10, plot = W - 2 * P, bw = plot / nb;
+    var bins = []; for (var i = 0; i < nb; i++) bins.push(0);
+    v.forEach(function (x) { var k = Math.min(nb - 1, Math.floor((x - min) / (range + 1) * nb)); bins[k]++; });
+    var top = Math.max.apply(null, bins.concat([1])), svg = s('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'توزيع الإجابات' });
+    var X = function (f) { return W - P - f * plot; };
+    bins.forEach(function (c, i) {
+      var hh = c / top * 150, x = X((i + 1) / nb) + 3;
+      svg.appendChild(s('rect', { class: 'v-bar', x: x, y: 190 - hh, width: Math.max(2, bw - 6), height: hh, rx: 5 }));
+      if (c) svg.appendChild(s('text', { class: 'v-num', x: x + (bw - 6) / 2, y: 184 - hh, 'text-anchor': 'middle' }, [c]));
+      var lab = range <= 10 ? String(min + i) : String(Math.round(min + i * (range + 1) / nb));
+      if (nb <= 10 || i % 2 === 0) svg.appendChild(s('text', { class: 'v-txt', x: x + (bw - 6) / 2, y: 212, 'text-anchor': 'middle' }, [lab]));
+    });
+    svg.appendChild(s('path', { class: 'v-axis', d: 'M' + P + ' 192 H' + (W - P) }));
+    if (v.length) {
+      var m = mean(v), mx = X((m - min + 0.5) / (range + 1));
+      svg.appendChild(s('line', { class: 'v-meanline', x1: mx, x2: mx, y1: 22, y2: 192 }));
+      svg.appendChild(s('text', { class: 'v-num', x: mx, y: 16, 'text-anchor': 'middle' }, ['المتوسط ' + num(m)]));
+    }
+    svg.appendChild(s('text', { class: 'v-txt', x: W - P, y: 234, 'text-anchor': 'start' }, [spec.minLabel || '']));
+    svg.appendChild(s('text', { class: 'v-txt', x: P, y: 234, 'text-anchor': 'end' }, [spec.maxLabel || '']));
+    return svg;
+  }
+  var YD_TXT = ['منطقة الراحة: مهام مألوفة بأقل قدر من القلق. مشروعة، لكنها لا تمنح أفضل أداء.',
+                'المنطقة الوسطى: ضغط معتدل يحفّز ولا يشلّ. هنا يتحقق أفضل أداء.',
+                'ضغط يتجاوز الطاقة: ينخفض الأداء بدل أن يرتفع، فنتدرج في الخروج من الراحة ولا نقفز.'];
+  function ydPt(t) { return { x: 600 - 560 * t, y: 250 - 200 * (1 - Math.pow(2 * t - 1, 2)) }; }
+  function vizYD(v) {
+    var svg = s('svg', { viewBox: '0 0 640 300', role: 'img', 'aria-label': 'موقع الحضور على منحنى يركس ودودسون' });
+    svg.appendChild(s('rect', { class: 'v-band', x: 432, y: 20, width: 168, height: 230 }));
+    svg.appendChild(s('rect', { class: 'v-band mid', x: 208, y: 20, width: 224, height: 230 }));
+    svg.appendChild(s('rect', { class: 'v-band', x: 40, y: 20, width: 168, height: 230 }));
+    [['راحة', 516], ['المنطقة الوسطى', 320], ['ضغط زائد', 124]].forEach(function (b) { svg.appendChild(s('text', { class: 'v-txt', x: b[1], y: 238, 'text-anchor': 'middle' }, [b[0]])); });
+    svg.appendChild(s('path', { class: 'v-axis', d: 'M600 250 H40 M600 250 V16' }));
+    var d = ''; for (var i = 0; i <= 60; i++) { var p = ydPt(i / 60); d += (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); }
+    svg.appendChild(s('path', { class: 'v-curve', d: d }));
+    v.forEach(function (x) { var p = ydPt(x / 100); svg.appendChild(s('circle', { class: 'v-dot', cx: p.x, cy: p.y, r: 7 })); });
+    if (v.length) { var mp = ydPt(mean(v) / 100); svg.appendChild(s('circle', { class: 'v-mean', cx: mp.x, cy: mp.y, r: 12 })); svg.appendChild(s('text', { class: 'v-num', x: mp.x, y: mp.y - 20, 'text-anchor': 'middle' }, ['متوسط الحضور'])); }
+    return svg;
+  }
+  function hbars(labels, counts, n, lead, hi) {
+    return h('div', {}, labels.map(function (t, i) {
+      var p = pct(counts[i], n);
+      return h('div', { class: 'hbar' + (i === lead && n ? ' lead' : '') }, [
+        h('div', { class: 't' }, [t, hi === i ? h('span', { class: 'tag' }, ['الأنسب']) : null]),
+        h('div', { class: 'tr' }, [h('div', { class: 'fl', style: 'width:' + p + '%' })]),
+        h('div', { class: 'p' }, [p + '%', ' ', h('small', {}, ['(' + counts[i] + ')'])])]);
+    }));
+  }
+  function stat(b, t, ltr) { return h('div', { class: 'stat' }, [h('b', ltr ? { style: 'direction:ltr;unicode-bidi:isolate' } : {}, [b]), h('span', {}, [t])]); }
+  function insCard(lines) {
+    if (!lines.length) return null;
+    return h('div', { class: 'ins' }, [h('h3', {}, ['استثمار النشاط · تعليق جاهز للقراءة'])].concat(lines.map(function (t) { return h('p', {}, [t]); })));
+  }
+  function single(text) { return h('div', { class: 'single' }, [h('h3', {}, ['الحضور كشخص واحد']), h('p', {}, [text])]); }
+
+  function body(r) {
+    var spec = r.spec || {}, v = vals(r), n = v.length, out = [];
+    if (!n) return [h('div', { class: 'empty' }, ['بانتظار الإجابات…'])];
+    if (r.type === 'scale') {
+      var m = mean(v), md = median(v);
+      out.push(h('div', { class: 'stats' }, [stat(num(m), 'المتوسط'), stat(num(md), 'الوسيط'), stat(Math.min.apply(null, v) + ' – ' + Math.max.apply(null, v), 'المدى')]));
+      out.push(h('div', { class: 'viz' }, [spec.curve === 'yd' ? vizYD(v) : vizHist(spec, v)]));
+      if (spec.bands) {
+        var bc = spec.bands.map(function (b) { return v.filter(function (x) { return x >= b.from && x <= b.to; }).length; });
+        out.push(hbars(spec.bands.map(function (b) { return b.label; }), bc, n, bc.indexOf(Math.max.apply(null, bc)), -1));
+        var zi = m / 100 < 0.3 ? 0 : (m / 100 < 0.7 ? 1 : 2);
+        if (spec.curve === 'yd') out.push(single('يقف الحضور في «' + spec.bands[zi].label + '» بمتوسط ' + num(m) + ' من 100. ' + YD_TXT[zi]));
+      } else {
+        var o = S.other, txt = 'متوسط الحضور ' + num(m) + ' من ' + spec.max + ' (' + n + ' مشاركاً).';
+        if (o && o.vals.length) {
+          var a = spec.phase === 'after' ? mean(o.vals) : m, b2 = spec.phase === 'after' ? m : mean(o.vals), d = b2 - a;
+          txt = 'قبل التمرين ' + num(a) + '، وبعده ' + num(b2) + ': ' + (d < 0 ? 'انخفض' : (d > 0 ? 'ارتفع' : 'لم يتغيّر')) + ' التوتر' + (d ? ' بمقدار ' + num(Math.abs(d)) + ' نقطة (' + Math.abs(pct(d, a)) + '%)' : '') + '.';
+          out.push(h('div', { class: 'cmp' }, [stat(num(a), 'المتوسط قبل (' + o.vals.length + ')'), stat(num(b2), 'المتوسط بعد'), stat((d > 0 ? '+' : (d < 0 ? '\u2212' : '')) + num(Math.abs(d)), 'الفرق', true)]));
+        }
+        out.push(single(txt));
+      }
+    } else if (r.type === 'choice') {
+      var opts = spec.options || [], c = aggChoice(v, opts.length), top = Math.max.apply(null, c), lead = c.indexOf(top);
+      out.push(h('div', { class: 'viz' }, [hbars(opts, c, n, lead, spec.highlight == null ? -1 : spec.highlight)]));
+      var leaders = opts.filter(function (_, i) { return c[i] === top; });
+      out.push(single(leaders.length > 1 ? 'تعادل بين «' + leaders.join('» و«') + '» بنسبة ' + pct(top, n) + '% لكلٍّ.' : 'الخيار الغالب «' + opts[lead] + '» بنسبة ' + pct(top, n) + '% (' + top + ' من ' + n + ').'));
+      var I = INS[r.activity];
+      if (I && I.options) {
+        var il = []; c.forEach(function (x, i) { if (x === top && I.options[i]) il.push(I.options[i]); });
+        if (il.length > 1) il.unshift('تعادلت الخيارات، فاشرحوا الغالبة معاً:');
+        if (I.close) il.push(I.close);
+        out.push(insCard(il));
+      }
+    } else if (r.type === 'matrix') {
+      var items = spec.items || [], quads = spec.quadrants || [], M = aggMatrix(v, items.length, quads.length);
+      var head = h('tr', {}, [h('th', {}, ['المهمة'])].concat(quads.map(function (q) { return h('th', { style: 'text-align:center' }, [q]); })));
+      var rows = items.map(function (it, i) {
+        var mx = Math.max.apply(null, M[i]);
+        return h('tr', {}, [h('th', { scope: 'row' }, [it])].concat(M[i].map(function (c, j) {
+          var p = pct(c, n); return h('td', { class: c === mx && c ? 'top' : '', style: 'background:color-mix(in srgb,var(--accent) ' + Math.round(p * 0.75) + '%,var(--tint))' }, [p + '%']);
+        })));
+      });
+      out.push(h('div', { class: 'viz' }, [h('table', { class: 'mx' }, [h('thead', {}, [head]), h('tbody', {}, rows)])]));
+      // المصفوفة الجماعية: كل مهمة في خانتها الغالبة
+      var modal = items.map(function (_, i) { return M[i].indexOf(Math.max.apply(null, M[i])); });
+      var ax = spec.axes || null, cells = quads.map(function (q, j) {
+        var placed = []; items.forEach(function (it, i) { if (modal[i] === j) placed.push(h('span', { class: 'pill' }, [it + ' · ' + pct(M[i][j], n) + '%'])); });
+        var avg = M.reduce(function (t, row) { return t + row[j]; }, 0) / n;
+        return h('div', { class: 'qc c' + j }, [h('h4', {}, [q]), h('div', { class: 'av' }, ['متوسط ' + num(avg, 2) + ' مهمة لكل مشارك'])].concat(placed));
+      });
+      var grid = ax ? h('div', { class: 'q2' }, [h('span', {}, []), h('span', { class: 'ax' }, [ax.cols[0]]), h('span', { class: 'ax' }, [ax.cols[1]]),
+        h('span', { class: 'ax' }, [ax.rows[0]]), cells[0], cells[1], h('span', { class: 'ax' }, [ax.rows[1]]), cells[2], cells[3]])
+        : h('div', { class: 'q2', style: 'grid-template-columns:1fr 1fr' }, cells);
+      out.push(h('div', { class: 'viz' }, [grid]));
+      out.push(single(items.map(function (it, i) { return '«' + it + '» ← ' + quads[modal[i]] + ' (' + pct(M[i][modal[i]], n) + '%)'; }).join('، ') + '.'));
+      var IM = INS[r.activity];
+      if (IM && IM.items) {
+        var wi = 0; items.forEach(function (_, i) { if (M[i][modal[i]] < M[wi][modal[wi]]) wi = i; });
+        var ml = ['اختلفتم أكثر على «' + items[wi] + '» (' + pct(M[wi][modal[wi]], n) + '% فقط في الخانة الغالبة): ' + (IM.items[wi] || '')];
+        if (IM.close) ml.push(IM.close);
+        out.push(insCard(ml));
+      }
+    }
+    return out;
+  }
+
+  // ---------- CSV ----------
+  function csv(r) {
+    var spec = r.spec || {}, esc = function (x) { return '"' + String(x).replace(/"/g, '""') + '"'; }, rows = [];
+    var head = ['#', 'الوقت'];
+    if (r.type === 'matrix') head = head.concat(spec.items || []); else head.push(r.type === 'choice' ? 'الخيار' : 'القيمة');
+    rows.push(head.map(esc).join(','));
+    S.resp.forEach(function (x, i) {
+      var v = x.payload.v, cols = [i + 1, x.created_at];
+      if (r.type === 'matrix') cols = cols.concat(v.map(function (q) { return (spec.quadrants || [])[q]; }));
+      else if (r.type === 'choice') cols.push((spec.options || [])[v]); else cols.push(v);
+      rows.push(cols.map(esc).join(','));
+    });
+    var blob = new Blob(['﻿' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var a = h('a', { href: URL.createObjectURL(blob), download: 'نتائج-' + r.activity + '.csv' }); document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  // ---------- العرض ----------
+  function renderResults() {
+    var box = $('#res'), r = curRound();
+    if (!r) { box.replaceChildren(h('div', { class: 'row noprint', style: 'margin-bottom:.8rem' }, [h('button', { class: 'btn sm', type: 'button', onclick: function () { setTab('plan'); } }, ['العودة إلى الأنشطة ◀'])]), h('div', { class: 'empty' }, ['ابدأ جولة من قائمة الأنشطة لتظهر نتائجها هنا مباشرة.'])); return; }
+    var open = r.status === 'open';
+    box.replaceChildren.apply(box, [
+      h('div', { class: 'row noprint', style: 'margin-bottom:.8rem' }, [h('button', { class: 'btn sm', type: 'button', onclick: function () { setTab('plan'); } }, ['العودة إلى الأنشطة ◀'])]),
+      h('div', { class: 'rh' }, [
+        h('div', {}, [h('span', { class: 'chip' + (open ? ' live' : '') }, [open ? 'الجولة مفتوحة' : 'الجولة مغلقة']), h('h1', {}, [r.title]),
+          (function () { var a = ACTS.filter(function (x) { return x.key === r.activity; })[0]; return a && a.cue ? h('p', { class: 'cue' }, ['في المسرحية · ' + a.cue.where + ' · ' + a.cue.say]) : null; })()]),
+        h('div', { class: 'n' }, [h('b', {}, [S.resp.length]), h('span', {}, ['مشارك'])])
+      ])
+    ].concat(body(r)).concat([
+      h('div', { class: 'acts noprint' }, [
+        open ? h('button', { class: 'btn pri', type: 'button', onclick: function () { closeRound(r.id); } }, ['أغلق الجولة']) : null,
+        h('button', { class: 'btn', type: 'button', onclick: function () { csv(r); }, disabled: !S.resp.length }, ['تصدير CSV']),
+        h('button', { class: 'btn', type: 'button', onclick: function () { window.print(); } }, ['طباعة / PDF']),
+        h('button', { class: 'btn danger', type: 'button', onclick: function () { clearResp(r.id); }, disabled: !S.resp.length }, ['مسح الإجابات']),
+        h('button', { class: 'btn danger', type: 'button', onclick: function () { delRound(r.id); } }, ['حذف الجولة'])
+      ])
+    ]));
+  }
+  function render(force) {
+    var r = curRound(), sig = [S.pin, S.joinUrl, S.sel, r && r.status, S.resp.length, (S.resp.length ? S.resp[S.resp.length - 1].id : 0), S.rounds.length, S.other && S.other.vals.length, S.rounds.map(function (x) { return x.status; }).join('')].join('|');
+    if (!force && sig === S.sig) return; S.sig = sig;
+    renderSession(); renderCorner(); renderPlan(); renderHist(); renderResults(); renderTabBadge();
+  }
+  function renderTabBadge() {
+    var open = S.rounds.filter(function (x) { return x.status === 'open'; })[0], b = $('#tabn');
+    b.hidden = !open; if (open) b.textContent = 'مفتوحة' + (open.id === S.sel ? ' · ' + S.resp.length : '');
+  }
+
+  // ---------- قائمة الأنشطة ----------
+  function actByKey(k) { return ACTS.filter(function (a) { return a.key === k; })[0]; }
+  function actState(k) {
+    var rs = S.rounds.filter(function (r) { return r.activity === k; });
+    return { open: rs.filter(function (r) { return r.status === 'open'; })[0] || null, done: rs.length > 0, last: rs[0] || null };
+  }
+  function viewRound(id) { S.sel = id; S.userSel = true; S.sig = ''; refresh(true); setTab('res'); }
+  function planCard(p, i) {
+    var a = actByKey(p.key), st = actState(p.key), acts = [];
+    if (!a) return null;
+    if (st.open) {
+      acts.push(h('button', { class: 'btn sm pri', type: 'button', onclick: function () { viewRound(st.open.id); } }, ['عرض النتائج']),
+        h('button', { class: 'btn sm danger', type: 'button', onclick: function () { closeRound(st.open.id); } }, ['أغلق الجولة']),
+        h('div', { class: 'cn' }, [st.open.id === S.sel ? S.resp.length + ' مشارك' : '']));
+    } else {
+      acts.push(h('button', { class: 'btn sm pri', type: 'button', 'data-go': p.key, onclick: function () { openRound(a); } }, [st.done ? 'أعد الجولة' : 'ابدأ الجولة']));
+      if (st.done) acts.push(h('button', { class: 'btn sm', type: 'button', onclick: function () { viewRound(st.last.id); } }, ['نتائج آخر جولة']));
+    }
+    var chip = h('span', { class: 'chip' + (st.open ? ' live' : '') }, [st.open ? 'الجولة مفتوحة الآن' : (st.done ? 'جولة حيّة · أُجريت' : 'جولة حيّة')]);
+    return h('div', { class: 'pc live' + (st.open ? ' on' : ''), 'data-key': p.key }, [
+      h('span', { class: 'no', 'aria-hidden': 'true' }, [String(i + 1)]),
+      h('div', { class: 'bd' }, [h('div', { class: 'meta' }, [chip, h('span', {}, [p.who]), h('span', {}, ['في المسرحية · ' + p.where])]),
+        h('h3', {}, [p.title]), h('p', { class: 'pq' }, [a.title]), h('p', { class: 'nt' }, [p.note])]),
+      h('div', { class: 'ac' }, acts)]);
+  }
+  function renderPlan() {
+    var box = $('#plan'), kids = [], last = '';
+    kids.push(h('div', { class: 'card ph' }, [h('h1', {}, ['الجولات الحيّة']),
+      h('p', {}, ['محورا إدارة الوقت وحل المشكلات وحدهما يعرضان نشاطهما على الموقع والشاشة: تُفتح كل جولة من هنا وتظهر نتائجها في تبويب «النتائج». أما بقية المحاور فتُؤدّى أنشطتها في القاعة بلا موقع ولا شاشة.'])]));
+    PLAN.forEach(function (p, i) {
+      var c = planCard(p, i); if (!c) return;
+      if (p.axis !== last) { kids.push(h('h2', { class: 'pax' }, [p.axis])); last = p.axis; }
+      kids.push(c);
+    });
+    box.replaceChildren.apply(box, kids);
+  }
+  function setTab(t) {
+    t = t === 'res' ? 'res' : 'plan';
+    S.tab = t; ls('mt_tab', t);
+    $('#plan').hidden = t !== 'plan'; $('#res').hidden = t !== 'res';
+    $('#tab-plan').setAttribute('aria-selected', String(t === 'plan'));
+    $('#tab-res').setAttribute('aria-selected', String(t === 'res'));
+    window.scrollTo(0, 0);
+  }
+  $('#tab-plan').addEventListener('click', function () { setTab('plan'); });
+  $('#tab-res').addEventListener('click', function () { setTab('res'); });
+
+  // ---------- وضع العرض ----------
+  var tabBeforePresent = null;
+  function present(on) {
+    if (on) { tabBeforePresent = S.tab; setTab('res'); } else if (tabBeforePresent) { var t0 = tabBeforePresent; tabBeforePresent = null; setTab(t0); }
+    document.body.classList.toggle('present', on);
+    try { if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () { }); if (!on && document.fullscreenElement) document.exitFullscreen(); } catch (e) { }
+  }
+  $('#presb').addEventListener('click', function () { present(true); });
+  $('#exitp').addEventListener('click', function () { present(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (document.body.classList.contains('present')) present(false);
+  });
+  document.addEventListener('fullscreenchange', function () { if (!document.fullscreenElement && document.body.classList.contains('present')) present(false); });
+})();
+</script>
+</body>
+</html>
